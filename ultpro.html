@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Developer6316 | Ultimate Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0c15;
+      --bg-secondary: rgba(10, 15, 30, 0.7);
+      --card-bg: rgba(15, 20, 35, 0.75);
+      --card-hover: rgba(30, 40, 60, 0.85);
+      --text-primary: #eef5ff;
+      --text-secondary: #cbd5ff;
+      --border-color: rgba(79, 130, 255, 0.4);
+      --accent: #4f8eff;
+      --accent-glow: rgba(79, 140, 255, 0.4);
+      --terminal-bg: #0a0f1a;
+      --rgb-glow: 79, 140, 255;
+    }
+
+    body.light-theme {
+      --bg-primary: #f0f4ff;
+      --bg-secondary: rgba(255, 255, 255, 0.8);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-hover: rgba(255, 255, 255, 0.95);
+      --text-primary: #1a1f2e;
+      --text-secondary: #2d3748;
+      --border-color: rgba(79, 130, 255, 0.5);
+      --accent: #4f46e5;
+      --terminal-bg: #eef2ff;
+      --rgb-glow: 79, 70, 229;
+    }
+
+    body.terminal-mode {
+      font-family: 'Fira Code', monospace;
+      --bg-primary: #000000;
+      --card-bg: #0a0a0a;
+      --text-primary: #00ff41;
+      --text-secondary: #00cc33;
+      --border-color: #00ff41;
+      --accent: #00ff41;
+      --accent-glow: rgba(0, 255, 65, 0.3);
+    }
+
+    body.terminal-mode .skill-card,
+    body.terminal-mode .craft-card,
+    body.terminal-mode .os-showcase,
+    body.terminal-mode .profile-card {
+      border-radius: 0;
+      font-family: 'Fira Code', monospace;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      scroll-behavior: smooth;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Particle Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Scroll Progress Bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, #4f8eff, #b77eff);
+      z-index: 1000;
+      transition: width 0.1s;
+    }
+
+    /* Header */
+    .brand-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      padding: 1rem 1.5rem;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      border: 1px solid var(--border-color);
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+    }
+
+    .branding h1 {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .gradient-text {
+      background: linear-gradient(115deg, #b77eff, #4f9eff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      background: var(--accent-glow);
+      backdrop-filter: blur(4px);
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: 0.2s;
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .profile-preview {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f8eff, #b77eff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .profile-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 4rem;
+    }
+
+    .hero-left {
+      flex: 1.2;
+    }
+
+    #typing-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      border-right: 3px solid var(--accent);
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      background: var(--card-bg);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+    }
+
+    /* Profile Cards Section */
+    .profile-section {
+      margin: 3rem 0;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      display: inline-block;
+      border-left: 5px solid var(--accent);
+      padding-left: 1rem;
+    }
+    
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    
+    .profile-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: var(--text-primary);
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 0 10px 25px var(--accent-glow);
+    }
+    
+    .profile-card i {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      display: inline-block;
+    }
+    
+    .profile-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    
+    .profile-card p {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+    
+    .profile-card .username {
+      font-size: 0.75rem;
+      font-family: monospace;
+      margin-top: 0.5rem;
+      color: var(--accent);
+    }
+
+    /* Skill Cards */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .skill-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    /* Progress Bars */
+    .skill-progress {
+      margin-top: 1rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--accent);
+      width: 0%;
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+    
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .skill-tags span {
+      background: var(--accent-glow);
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+    }
+
+    /* Portfolio Gallery */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .portfolio-item {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: 0.3s;
+    }
+    .portfolio-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .portfolio-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #2a3a6a, #1a2a4a);
+    }
+    .portfolio-item h4 {
+      padding: 1rem 1rem 0.5rem;
+    }
+    .portfolio-item p {
+      padding: 0 1rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* GitHub Feed */
+    .github-feed {
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .repo-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .repo-card {
+      background: var(--bg-secondary);
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .os-showcase {
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .contact-form {
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 1rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    .glow-btn {
+      background: linear-gradient(95deg, #2b3b8c, #4f6eff);
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 2rem;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      #typing-text { font-size: 1.2rem; white-space: normal; }
+      .container { padding: 1rem; }
+      .profile-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="container">
+    <div class="brand-header">
+      <div class="branding">
+        <h1><span class="gradient-text">Developer6316</span></h1>
+        <div class="sub">// full-stack architect · ethical hacker · system builder · multi-os master</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggleBtn"><i class="fas fa-moon"></i> Theme</button>
+        <button class="icon-btn" id="terminalToggleBtn"><i class="fas fa-terminal"></i> Terminal</button>
+        <button class="icon-btn" id="matrixToggleBtn"><i class="fas fa-code"></i> Code Rain</button>
+        <div class="profile-preview" id="profilePreviewBtn">
+          <i class="fas fa-user-astronaut"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-left">
+        <h2>code. hack. build. <span class="gradient-text">secure.</span> evolve.</h2>
+        <div class="typing-wrapper">
+          <div id="typing-text"></div>
+        </div>
+        <p id="heroDescription">Software developer, AI/ML trainer, ethical hacker, system builder, multi-OS power user — securing digital frontiers.</p>
+        <div class="stats">
+          <div class="stat-item"><i class="fas fa-code"></i> 7+ domains</div>
+          <div class="stat-item"><i class="fas fa-microchip"></i> hardware-software fusion</div>
+          <div class="stat-item"><i class="fas fa-shield-haltered"></i> ethical hacking</div>
+        </div>
+        <button class="glow-btn" id="resumeBtn" style="margin-top: 1rem;"><i class="fas fa-download"></i> Download Resume</button>
+      </div>
+      <div class="hero-right">
+        <div class="orb" style="width: 220px; height: 220px; background: radial-gradient(circle, var(--accent-glow), transparent); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-cogs" style="font-size: 5rem;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developer Profiles Section -->
+    <div class="profile-section">
+      <h2 class="section-title"><i class="fas fa-link"></i> Connect With Me</h2>
+      <div class="profile-grid" id="profileGrid">
+        <!-- GitHub -->
+        <a href="https://github.com/Developer6316" target="_blank" class="profile-card" data-profile="github">
+          <i class="fab fa-github"></i>
+          <h4>GitHub</h4>
+          <p>Open source & code</p>
+          <div class="username">@Developer6316</div>
+        </a>
+        <!-- LinkedIn -->
+        <a href="https://linkedin.com/in/developer6316" target="_blank" class="profile-card" data-profile="linkedin">
+          <i class="fab fa-linkedin"></i>
+          <h4>LinkedIn</h4>
+          <p>Professional network</p>
+          <div class="username">/in/developer6316</div>
+        </a>
+        <!-- Twitter/X -->
+        <a href="https://twitter.com/Developer6316" target="_blank" class="profile-card" data-profile="twitter">
+          <i class="fab fa-twitter"></i>
+          <h4>X / Twitter</h4>
+          <p>Tech thoughts & updates</p>
+          <div class="username">@Developer6316</div>
+        </a>
+        <!-- Dev.to -->
+        <a href="https://dev.to/developer6316" target="_blank" class="profile-card" data-profile="devto">
+          <i class="fab fa-dev"></i>
+          <h4>Dev.to</h4>
+          <p>Technical blogs</p>
+          <div class="username">@developer6316</div>
+        </a>
+        <!-- Hashnode -->
+        <a href="https://hashnode.com/@Developer6316" target="_blank" class="profile-card" data-profile="hashnode">
+          <i class="fas fa-blog"></i>
+          <h4>Hashnode</h4>
+          <p>Dev blog</p>
+          <div class="username">@Developer6316</div>
+        </a>
+        <!-- Stack Overflow -->
+        <a href="https://stackoverflow.com/users/developer6316" target="_blank" class="profile-card" data-profile="stackoverflow">
+          <i class="fab fa-stack-overflow"></i>
+          <h4>Stack Overflow</h4>
+          <p>Q&A & solutions</p>
+          <div class="username">Developer6316</div>
+        </a>
+        <!-- LeetCode -->
+        <a href="https://leetcode.com/Developer6316" target="_blank" class="profile-card" data-profile="leetcode">
+          <i class="fas fa-code"></i>
+          <h4>LeetCode</h4>
+          <p>DSA & challenges</p>
+          <div class="username">Developer6316</div>
+        </a>
+        <!-- HackerRank -->
+        <a href="https://www.hackerrank.com/Developer6316" target="_blank" class="profile-card" data-profile="hackerrank">
+          <i class="fab fa-hackerrank"></i>
+          <h4>HackerRank</h4>
+          <p>Coding challenges</p>
+          <div class="username">Developer6316</div>
+        </a>
+        <!-- Medium -->
+        <a href="https://medium.com/@Developer6316" target="_blank" class="profile-card" data-profile="medium">
+          <i class="fab fa-medium"></i>
+          <h4>Medium</h4>
+          <p>In-depth articles</p>
+          <div class="username">@Developer6316</div>
+        </a>
+        <!-- YouTube -->
+        <a href="https://youtube.com/@Developer6316" target="_blank" class="profile-card" data-profile="youtube">
+          <i class="fab fa-youtube"></i>
+          <h4>YouTube</h4>
+          <p>Tutorials & demos</p>
+          <div class="username">@Developer6316</div>
+        </a>
+        <!-- Discord -->
+        <a href="https://discord.gg/developer6316" target="_blank" class="profile-card" data-profile="discord">
+          <i class="fab fa-discord"></i>
+          <h4>Discord</h4>
+          <p>Community server</p>
+          <div class="username">Developer6316</div>
+        </a>
+        <!-- Telegram -->
+        <a href="https://t.me/Developer6316" target="_blank" class="profile-card" data-profile="telegram">
+          <i class="fab fa-telegram"></i>
+          <h4>Telegram</h4>
+          <p>Direct connect</p>
+          <div class="username">@Developer6316</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Skills with Progress Bars -->
+    <h2 class="section-title"><i class="fas fa-chart-line"></i> Skills & Expertise</h2>
+    <div class="skills-grid" id="skillsGrid">
+      <div class="skill-card" data-tilt><h3>Software Development</h3><div class="skill-progress"><div class="progress-label"><span>Full-stack</span><span>95%</span></div><div class="progress-bar-bg"><div class="progress-fill" data-width="95"></div></div></div><div class="skill-tags"><span>Python</span><span>React</span><span>Go</span><span>Rust</span></div></div>
+      <div class="skill-card" data-tilt><h3>AI/ML Engineering</h3><div class="skill-progress"><div class="progress-label"><span>LLM/Training</span><span>90%</span></div><div class="progress-bar-bg"><div class="progress-fill" data-width="90"></div></div></div><div class="skill-tags"><span>PyTorch</span><span>LangChain</span><span>TensorFlow</span></div></div>
+      <div class="skill-card" data-tilt><h3>Ethical Hacking</h3><div class="skill-progress"><div class="progress-label"><span>Pen Testing</span><span>88%</span></div><div class="progress-bar-bg"><div class="progress-fill" data-width="88"></div></div></div><div class="skill-tags"><span>Kali</span><span>Metasploit</span><span>Burp Suite</span></div></div>
+      <div class="skill-card" data-tilt><h3>System Building</h3><div class="skill-progress"><div class="progress-label"><span>Hardware</span><span>92%</span></div><div class="progress-bar-bg"><div class="progress-fill" data-width="92"></div></div></div><div class="skill-tags"><span>Custom PC</span><span>Server Racks</span><span>Proxmox</span></div></div>
+    </div>
+
+    <!-- Portfolio Gallery -->
+    <h2 class="section-title"><i class="fas fa-folder-open"></i> Featured Projects</h2>
+    <div class="portfolio-grid">
+      <div class="portfolio-item"><img src="https://via.placeholder.com/400x200/2a3a6a/ffffff?text=AI+Sentinel" alt="Project"><h4>AI Sentinel</h4><p>ML-powered threat detection system</p></div>
+      <div class="portfolio-item"><img src="https://via.placeholder.com/400x200/2a3a6a/ffffff?text=OS+Orchestrator" alt="Project"><h4>OS Orchestrator</h4><p>Multi-OS management dashboard</p></div>
+      <div class="portfolio-item"><img src="https://via.placeholder.com/400x200/2a3a6a/ffffff?text=Secure+Shell+Framework" alt="Project"><h4>Secure Shell Framework</h4><p>Penetration testing toolkit</p></div>
+    </div>
+
+    <!-- Multi-OS Showcase -->
+    <div class="os-showcase">
+      <span><i class="fas fa-globe"></i> Multi-OS Mastery</span>
+      <div><i class="fab fa-windows"></i> <i class="fab fa-linux"></i> <i class="fab fa-apple"></i> <i class="fab fa-android"></i> <i class="fab fa-freebsd"></i></div>
+    </div>
+
+    <!-- GitHub Feed -->
+    <div class="github-feed">
+      <h3><i class="fab fa-github"></i> GitHub Activity</h3>
+      <div class="repo-list" id="repoList">
+        <div class="repo-card">Loading repos...</div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <h3><i class="fas fa-envelope"></i> Get in Touch</h3>
+      <form id="contactForm" action="https://formspree.io/f/xqapjqkr" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" rows="4" placeholder="Your Message" required></textarea>
+        <button type="submit" class="glow-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+      </form>
+    </div>
+
+    <footer>
+      <p><i class="fas fa-code"></i> Developer6316 | Ethical Hacker | System Architect | Multi-OS Master</p>
+      <div style="margin-top: 1rem;">
+        <a href="https://github.com/Developer6316" target="_blank" style="color: var(--accent); margin: 0 0.5rem;"><i class="fab fa-github"></i></a>
+        <a href="https://linkedin.com/in/developer6316" target="_blank" style="color: var(--accent); margin: 0 0.5rem;"><i class="fab fa-linkedin"></i></a>
+        <a href="https://twitter.com/Developer6316" target="_blank" style="color: var(--accent); margin: 0 0.5rem;"><i class="fab fa-twitter"></i></a>
+        <a href="https://dev.to/developer6316" target="_blank" style="color: var(--accent); margin: 0 0.5rem;"><i class="fab fa-dev"></i></a>
+        <a href="https://youtube.com/@Developer6316" target="_blank" style="color: var(--accent); margin: 0 0.5rem;"><i class="fab fa-youtube"></i></a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+
+    // Typing Animation
+    const roles = ["⚡ Software Developer", "🧠 AI/ML Trainer", "🔓 Ethical Hacker", "🖥️ System Builder", "🐧 Multi-OS Master", "🔐 Cybersecurity Expert"];
+    let roleIndex = 0, charIndex = 0, isDeleting = false;
+    const typingElement = document.getElementById("typing-text");
+    function typeEffect() {
+      const current = roles[roleIndex];
+      if (isDeleting) typingElement.textContent = current.substring(0, charIndex--);
+      else typingElement.textContent = current.substring(0, charIndex++);
+      if (!isDeleting && charIndex === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+      if (isDeleting && charIndex === 0) { isDeleting = false; roleIndex = (roleIndex + 1) % roles.length; setTimeout(typeEffect, 500); return; }
+      setTimeout(typeEffect, isDeleting ? 50 : 100);
+    }
+    typeEffect();
+
+    // Animate Progress Bars on Scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.progress-fill').forEach(fill => {
+            const width = fill.dataset.width;
+            fill.style.width = width + '%';
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.skill-card').forEach(card => observer.observe(card));
+
+    // Theme Toggle
+    let isDark = true;
+    document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      isDark = !document.body.classList.contains('light-theme');
+    });
+
+    // Terminal Mode Toggle
+    document.getElementById('terminalToggleBtn').addEventListener('click', () => {
+      document.body.classList.toggle('terminal-mode');
+    });
+
+    // Programming Languages Matrix Rain
+    let matrixInterval;
+    const programmingLanguages = ["Python", "Java", "C++", "Rust", "Go", "JS", "TS", "Ruby", "PHP", "Swift", "Kotlin", "C#", "HTML", "CSS", "React", "Node", "Django", "Flask", "SQL", "MongoDB"];
+    
+    document.getElementById('matrixToggleBtn').addEventListener('click', () => {
+      if (matrixInterval) {
+        clearInterval(matrixInterval);
+        matrixInterval = null;
+        const existingCanvas = document.getElementById('matrix-canvas');
+        if (existingCanvas) existingCanvas.remove();
+        document.getElementById('matrixToggleBtn').style.opacity = '1';
+      } else {
+        startCodeRain();
+        document.getElementById('matrixToggleBtn').style.opacity = '0.7';
+      }
+    });
+
+    function startCodeRain() {
+      const canvas = document.createElement('canvas');
+      canvas.id = 'matrix-canvas';
+      canvas.style.position = 'fixed';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '9999';
+      canvas.style.opacity = '0.2';
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      
+      function resizeMatrix() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeMatrix);
+      resizeMatrix();
+      
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(1);
+      
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0f0';
+        ctx.font = fontSize + 'px "Fira Code", monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = programmingLanguages[Math.floor(Math.random() * programmingLanguages.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+      matrixInterval = setInterval(draw, 60);
+      
+      canvas.addEventListener('click', () => {
+        clearInterval(matrixInterval);
+        canvas.remove();
+        matrixInterval = null;
+        window.removeEventListener('resize', resizeMatrix);
+      });
+    }
+
+    // Particle Background
+    const particleCanvas = document.getElementById('particle-canvas');
+    const particleCtx = particleCanvas.getContext('2d');
+    let particles = [];
+    function resizeCanvas() {
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    for (let i = 0; i < 80; i++) {
+      particles.push({ x: Math.random() * particleCanvas.width, y: Math.random() * particleCanvas.height, radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 });
+    }
+    function animateParticles() {
+      particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      particles.forEach(p => {
+        particleCtx.beginPath();
+        particleCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        particleCtx.fillStyle = `rgba(79, 140, 255, ${p.alpha})`;
+        particleCtx.fill();
+        p.y += 0.3;
+        if (p.y > particleCanvas.height) p.y = 0;
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // GitHub Feed
+    const repos = [
+      { name: "AI-Sentinel", stars: 127, lang: "Python", desc: "ML threat detection" },
+      { name: "OS-Orchestrator", stars: 89, lang: "TypeScript", desc: "Multi-OS manager" },
+      { name: "SecureShell-Framework", stars: 67, lang: "Go", desc: "Pen testing toolkit" },
+      { name: "CodeGuardian", stars: 45, lang: "Rust", desc: "Security analyzer" }
+    ];
+    const repoList = document.getElementById('repoList');
+    repoList.innerHTML = repos.map(repo => `<div class="repo-card"><strong>${repo.name}</strong><br>⭐ ${repo.stars} · ${repo.lang}<br><small>${repo.desc}</small></div>`).join('');
+
+    // Profile Avatar Upload
+    document.getElementById('profilePreviewBtn').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const preview = document.querySelector('.profile-preview');
+            preview.innerHTML = `<img src="${event.target.result}" alt="avatar">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    });
+
+    // Resume Download
+    document.getElementById('resumeBtn').addEventListener('click', () => {
+      alert("📄 Resume: Developer6316 - Full Stack Developer, AI/ML Engineer, Ethical Hacker");
+      canvasConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    });
+
+    // Contact Form Submit
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert("✅ Message sent! I'll get back to you within 24 hours.");
+      canvasConfetti({ particleCount: 150, spread: 100 });
+      e.target.reset();
+    });
+
+    // Update profile links - you can edit these URLs
+    const profileLinks = {
+      github: "https://github.com/Developer6316",
+      linkedin: "https://linkedin.com/in/developer6316",
+      twitter: "https://twitter.com/Developer6316",
+      devto: "https://dev.to/developer6316",
+      hashnode: "https://hashnode.com/@Developer6316",
+      stackoverflow: "https://stackoverflow.com/users/developer6316",
+      leetcode: "https://leetcode.com/Developer6316",
+      hackerrank: "https://www.hackerrank.com/Developer6316",
+      medium: "https://medium.com/@Developer6316",
+      youtube: "https://youtube.com/@Developer6316",
+      discord: "https://discord.gg/developer6316",
+      telegram: "https://t.me/Developer6316"
+    };
+  </script>
+</body>
+</html>
